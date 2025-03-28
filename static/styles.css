@@ -1,0 +1,9 @@
+.error {
+    color: red;
+}
+
+body {
+    text-align: center;
+    margin: 0 auto;
+    background-color: aliceblue;
+}
