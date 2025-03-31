@@ -148,6 +148,18 @@
             color: #ddd;
         }
 
+        #buildResult {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+        }
+
         /* Адаптация для мобильных */
         @media (max-width: 767px) {
             .container {
@@ -199,7 +211,7 @@
             </form>
         </div>
 
-        <div id="buildResult" class="container"></div>
+        <div id="buildResult" class="mt-4"></div>
 
         <!-- Боковой блок с полезными статьями -->
         <div class="sidebar">
@@ -215,57 +227,54 @@
 
         <script>
             document.getElementById('buildForm').addEventListener('submit', async function (e) {
-                e.preventDefault();
-        
-                const budget = document.getElementById('budget').value;
-                const goals = Array.from(document.getElementById('goals').selectedOptions).map(option => option.value);
-        
-                const response = await fetch('/build', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ budget, goals })
-                });
-        
-                const build = await response.json();
-                const resultDiv = document.getElementById('buildResult');
-                resultDiv.innerHTML = '';
-        
-                if (build.errors && build.errors.length > 0) {
-                    build.errors.forEach(error => {
-                        resultDiv.innerHTML += `<p class="text-danger">${error}</p>`;
-                    });
-                }
-        
-                if (!build.components || Object.keys(build.components).length === 0) {
-                    resultDiv.innerHTML += '<p class="text-danger text-center">Не удалось собрать ПК в рамках заданного бюджета.</p>';
-                } else {
-                    for (const [component, details] of Object.entries(build.components)) {
-                        const card = `
-                            <div class="card mb-3">
-                                <img src="${details.image}" class="card-img" alt="${details.model}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${component}</h5>
-                                    <p class="card-text">
-                                        <strong>Производитель:</strong> ${details.manufacturer}<br>
-                                        <strong>Модель:</strong> ${details.model}<br>
-                                        <strong>Цена:</strong> ${details.price} руб.<br>
-                                        <a href="https://www.citilink.ru/${details.href}" target="_blank">Подробнее</a>
-                                    </p>
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.innerHTML += card;
-                    }
-                }
-        
-                const resultContainer = document.getElementById('result');
-                resultContainer.style.display = 'block';
-                setTimeout(() => {
-                    resultContainer.style.opacity = '1';
-                }, 50);
-            });
+    e.preventDefault();
+
+    const budget = document.getElementById('budget').value;
+    const goals = Array.from(document.getElementById('goals').selectedOptions).map(option => option.value);
+
+    const response = await fetch('/build', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ budget, goals })
+    });
+
+    const build = await response.json();
+    console.log(build); // Проверим, какие данные приходят
+
+    const resultDiv = document.getElementById('buildResult');
+    resultDiv.innerHTML = ''; // Очищаем перед добавлением новых карточек
+
+    if (build.errors && build.errors.length > 0) {
+        build.errors.forEach(error => {
+            resultDiv.innerHTML += `<p class="text-danger">${error}</p>`;
+        });
+    }
+
+    if (!build.components || Object.keys(build.components).length === 0) {
+        resultDiv.innerHTML += '<p class="text-danger text-center">Не удалось собрать ПК в рамках бюджета.</p>';
+    } else {
+        for (const [component, details] of Object.entries(build.components)) {
+            const card = `
+                <div class="card mb-3">
+                    <img src="${details.image}" class="card-img" alt="${details.model}">
+                    <div class="card-body">
+                        <h5 class="card-title">${component}</h5>
+                        <p class="card-text">
+                            <strong>Производитель:</strong> ${details.manufacturer}<br>
+                            <strong>Модель:</strong> ${details.model}<br>
+                            <strong>Цена:</strong> ${details.price} руб.<br>
+                            <a href="https://www.citilink.ru/${details.href}" target="_blank">Подробнее</a>
+                        </p>
+                    </div>
+                </div>
+            `;
+            resultDiv.innerHTML += card;
+        }
+    }
+});
+
         </script>
     </div>
 </body>
