@@ -9,8 +9,7 @@
         /* Фон сайта */
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(10, 25, 50, 0.9)), 
-                        url('https://source.unsplash.com/1600x900/?technology,computer') no-repeat center/cover;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(10, 25, 50, 0.9)), repeat center/cover;
             color: #fff;
             height: 100%;
         }
@@ -197,7 +196,19 @@
                 <button type="submit" class="btn btn-primary w-100">Собрать ПК</button>
             </form>
         </div>
-    
+
+        <!-- Боковой блок с полезными статьями -->
+        <div class="sidebar">
+            <h3>Полезные статьи</h3>
+            <ul>
+                <li><a href="#">Как выбрать процессор</a></li>
+                <li><a href="#">Как выбрать видеокарту</a></li>
+                <li><a href="#">Как выбрать оперативную память</a></li>
+                <li><a href="#">Как выбрать блок питания</a></li>
+                <li><a href="#">Как выбрать накопитель</a></li>
+            </ul>
+        </div>
+
         <script>
             document.getElementById('buildForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
