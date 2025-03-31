@@ -221,4 +221,5 @@ def build_pc():
     return jsonify(build)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    port = int(os.environ.get("PORT", 5000))  # Render автоматически задает PORT
+    app.run(host="0.0.0.0", port=port)
