@@ -35,6 +35,16 @@ components_data = load_data()
 def index():
     return render_template('index.html')
 
+# Количество страниц с вопросами
+TOTAL_PAGES = 5  
+
+@app.route('/<int:num>')
+def questions(num):
+    if num < 1 or num > TOTAL_PAGES:
+        return "Страница не найдена", 404
+    
+    return render_template(f'{num}.html', num=num, total_pages=TOTAL_PAGES)
+
 @app.route('/build', methods=['POST'])
 def build_pc():
     budget = float(request.json.get('budget', 0))  # Преобразуем бюджет в float
