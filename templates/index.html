@@ -167,6 +167,35 @@
             max-width: 400px;
         }
 
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
+            display: none; /* Скрыто по умолчанию */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Поверх всего контента */
+        }
+
+        .loading-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 10px;
+        }
+
+
         /* Адаптация для мобильных */
         @media (max-width: 767px) {
         .container {
@@ -235,55 +264,77 @@
             </ul>
         </div>
 
+        <div id="loadingOverlay">
+            <div class="loading-content">
+                <div class="spinner-border text-info" role="status"></div>
+                <p>Идёт подбор комплектующих...</p>
+            </div>
+        </div>        
+
         <script>
             document.getElementById('buildForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    const budget = document.getElementById('budget').value;
-    const goals = Array.from(document.getElementById('goals').selectedOptions).map(option => option.value);
+            const budget = document.getElementById('budget').value;
+            const goals = Array.from(document.getElementById('goals').selectedOptions).map(option => option.value);
+            const loadingOverlay = document.getElementById('loadingOverlay');
 
-    const response = await fetch('/build', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ budget, goals })
-    });
+            // Показываем загрузку
+            loadingOverlay.style.display = 'flex';
 
-    const build = await response.json();
-    console.log(build); // Проверим, какие данные приходят
+            try {
+                const response = await fetch('/build', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ budget, goals })
+                });
 
-    const resultDiv = document.getElementById('buildResult');
-    resultDiv.innerHTML = ''; // Очищаем перед добавлением новых карточек
+                const build = await response.json();
+                const resultDiv = document.getElementById('buildResult');
+                resultDiv.innerHTML = '';
 
-    if (build.errors && build.errors.length > 0) {
-        build.errors.forEach(error => {
-            resultDiv.innerHTML += `<p class="text-danger">${error}</p>`;
+                if (build.errors && build.errors.length > 0) {
+                    build.errors.forEach(error => {
+                        resultDiv.innerHTML += `<p class="text-danger">${error}</p>`;
+                    });
+                }
+
+                if (!build.components || Object.keys(build.components).length === 0) {
+                    resultDiv.innerHTML += '<p class="text-danger text-center">Не удалось собрать ПК в рамках заданного бюджета.</p>';
+                } else {
+                    for (const [component, details] of Object.entries(build.components)) {
+                        const card = `
+                            <div class="card mb-3">
+                                <img src="${details.image}" class="card-img" alt="${details.model}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${component}</h5>
+                                    <p class="card-text">
+                                        <strong>Производитель:</strong> ${details.manufacturer}<br>
+                                        <strong>Модель:</strong> ${details.model}<br>
+                                        <strong>Цена:</strong> ${details.price} руб.<br>
+                                        <a href="https://www.citilink.ru/${details.href}" target="_blank">Подробнее</a>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        resultDiv.innerHTML += card;
+                    }
+                }
+
+                const resultContainer = document.getElementById('result');
+                resultContainer.style.display = 'block';
+                setTimeout(() => {
+                    resultContainer.style.opacity = '1';
+                }, 50);
+
+            } catch (error) {
+                console.error('Ошибка при загрузке сборки:', error);
+            } finally {
+                // Скрываем загрузку
+                loadingOverlay.style.display = 'none';
+            }
         });
-    }
 
-    if (!build.components || Object.keys(build.components).length === 0) {
-        resultDiv.innerHTML += '<p class="text-danger text-center">Не удалось собрать ПК в рамках бюджета.</p>';
-    } else {
-        for (const [component, details] of Object.entries(build.components)) {
-            const card = `
-                <div class="card mb-3">
-                    <img src="${details.image}" class="card-img" alt="${details.model}">
-                    <div class="card-body">
-                        <h5 class="card-title">${component}</h5>
-                        <p class="card-text">
-                            <strong>Производитель:</strong> ${details.manufacturer}<br>
-                            <strong>Модель:</strong> ${details.model}<br>
-                            <strong>Цена:</strong> ${details.price} руб.<br>
-                            <a href="https://www.citilink.ru/${details.href}" target="_blank">Подробнее</a>
-                        </p>
-                    </div>
-                </div>
-            `;
-            resultDiv.innerHTML += card;
-        }
-    }
-});
 
         </script>
     </div>
