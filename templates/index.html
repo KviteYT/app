@@ -169,19 +169,24 @@
 
         /* Адаптация для мобильных */
         @media (max-width: 767px) {
-            .main-content {
-                display: flex;
-                flex-direction: column;
-            }
-
-            #buildResult {
-                order: 2; /* Результаты идут после формы */
-            }
-
-            #buildForm {
-                order: 1; /* Форма остаётся первой */
-            }
+        .container {
+            display: flex;
+            flex-direction: column;
         }
+
+        .main-content {
+            order: 1; /* Основной контент (форма) остаётся первым */
+        }
+
+        #buildResult {
+            order: 2; /* Карточки идут после формы */
+        }
+
+        .sidebar {
+            order: 3; /* Полезные статьи идут последними */
+        }
+        }
+
     </style>
 </head>
 <body>
