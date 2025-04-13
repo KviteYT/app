@@ -65,20 +65,21 @@ def build_pc():
             "processory": 0.2,
             "videokarty": 0.5,
             "materinskie-platy": 0.1,
-            "moduli-pamyati": 0.2
+            "moduli-pamyati": 0.2,
+            "ssd-nakopiteli": 0.1
         },
         "Office Work": {
             "processory": 0.3,
             "videokarty": 0.1,
             "materinskie-platy": 0.2,
-            "moduli-pamyati": 0.3,
-            "ssd-nakopiteli": 0.1
+            "moduli-pamyati": 0.3
         },
         "Streaming": {
             "processory": 0.4,
             "videokarty": 0.3,
             "materinskie-platy": 0.1,
-            "moduli-pamyati": 0.2
+            "moduli-pamyati": 0.2,
+            "ssd-nakopiteli": 0.1
         },
         "Video Editing": {
             "processory": 0.4,
