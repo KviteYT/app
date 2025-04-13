@@ -8,7 +8,7 @@ import re
 
 def main(curl):
     def parc():
-        TIMER = 10
+        TIMER = 1
         names = []
         hrefs = []
         models = []
@@ -21,27 +21,26 @@ def main(curl):
         sleep(TIMER)
         content = BeautifulSoup(driver.page_source, "html.parser")
         pages = int(content.find_all(
-            "div", {"class": "app-catalog-1ck5rca ero1s990"})[-1].text)
-        #pages = 1
+            "div", {"class": "app-catalog-10181fg-ElementWrapper--ElementWrapper evbl9mj0"})[-1].text)
+        print(pages)
 
         for page in range(1, pages + 1):
             driver.get(
                 url=f'https://www.citilink.ru/catalog/{curl}/?view_type=list&sorting=price_asc&p={page}')
             sleep(TIMER)
             content = BeautifulSoup(driver.page_source, "html.parser").find(
-                'div', {'class': "ehanbgo0 app-catalog-1w7tb29 e1loosed0"})
-            for name in content.find_all("a", {"class": "app-catalog-9gnskf e1259i3g0"}):
+                'div', {'class': "e13x19s60 app-catalog-1bvrslt-StyledGridItem--StyledGridItem-composeBreakpointsStyles--arrayOfStylesByBreakpoints-composeBreakpointsStyles--arrayOfStylesByBreakpoints-GridItem--WrappedGridItem e1uawgvp0"})
+            for name in content.find_all("a", {"class": "app-catalog-1g0fl7h-Anchor--Anchor-Anchor--StyledAnchor ejir1360"}):
                 names.append(name.text)
                 hrefs.append(name.get('href'))
-            for model1 in content.find_all("ul", {"class": "app-catalog-14f68kq e4qu3683"}):
+            for model1 in content.find_all("ul", {"class": "app-catalog-1u2u8dc-components--Properties-composeBreakpointsStyles--arrayOfStylesByBreakpoints-getTypographyStyles--getTypographyStyles ekqg32y0"}):
                 models_inner = []
-                for model in model1.find_all("li", {"class": "app-catalog-12y5psc e4qu3682"}):
+                for model in model1.find_all("li", {"class": "app-catalog-5kkfdq-components--PropertiesItem ekqg32y1"}):
                     models_inner.append(model.text)
                 models.append(models_inner)
-            for price in content.find_all("span", {"class": "e1j9birj0 e106ikdt0 app-catalog-p2oaao e1gjr6xo0"}):
+            for price in content.find_all("span", {"class": "e4ahr150 e1a7a4n70 app-catalog-1dno20p-StyledTypography--getTypographyStyle-composeBreakpointsStyles--arrayOfStylesByBreakpoints-StyledText--getTextStyle-Text--StyledTextComponent-MainPriceNumber--StyledMainPriceNumber ez8h4tf0"}):
                 prices.append(price.text)
-            for img in [img for img in content.find_all("img", {'class': 'ekkbt9g0 app-catalog-15kpwh2 e1fcwjnh0'}) + content.find_all(
-                    "img", {'class': 'emd6ru10 app-catalog-1ljntpj e1fcwjnh0 is-selected'})]:
+            for img in [img for img in content.find_all("img", {'class': 'eikooao0 app-catalog-1uk1s5v-Img--StyledImg-Img--StyledImg-StyledImage ed4p12j0 is-selected'})]:
                 images.append(img.get('src'))
         driver.close()
         driver.quit()
@@ -143,10 +142,10 @@ def main(curl):
 
 
 # ... (ваш код парсинга) ...
-#main('processory')
-#main('materinskie-platy')
-main('moduli-pamyati')
-#main('bloki-pitaniya')
-#main('videokarty')
-#main('zhestkie-diski')
-#main('ssd-nakopiteli')
+# main('processory')
+# main('materinskie-platy')
+# main('moduli-pamyati')
+# main('bloki-pitaniya')
+# main('videokarty')
+# main('zhestkie-diski')
+# main('ssd-nakopiteli')
